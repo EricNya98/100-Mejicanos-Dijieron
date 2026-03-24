@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { User } from 'firebase/auth';
 import { db } from '../firebase';
-import { doc, onSnapshot, updateDoc, getDoc, collection, getDocs, query, where, limit } from 'firebase/firestore';
+import { doc, onSnapshot, updateDoc, getDoc, collection, getDocs, query, limit } from 'firebase/firestore';
 import { handleFirestoreError, OperationType } from '../lib/errorHandlers';
 import { toast } from 'sonner';
 import { X, Trophy, Volume2, VolumeX, ChevronRight, RotateCcw, LogOut } from 'lucide-react';
@@ -10,7 +9,6 @@ import ModeratorPanel from './ModeratorPanel';
 
 interface GameScreenProps {
   gameId: string;
-  user: User | null;
   onExit: () => void;
 }
 
@@ -49,7 +47,7 @@ const SOUNDS = {
   victory: 'https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3', // A more triumphant sound
 };
 
-export default function GameScreen({ gameId, user, onExit }: GameScreenProps) {
+export default function GameScreen({ gameId, onExit }: GameScreenProps) {
   const [game, setGame] = useState<GameData | null>(null);
   const [question, setQuestion] = useState<Question | null>(null);
   const [muted, setMuted] = useState(false);
@@ -57,30 +55,24 @@ export default function GameScreen({ gameId, user, onExit }: GameScreenProps) {
 
   useEffect(() => {
     if (gameId === 'last-game') {
-      // Find the most recent game for this user
-      if (user) {
-        const q = query(
-          collection(db, 'games'),
-          where('moderatorId', '==', user.uid),
-          limit(1)
-        );
-        getDocs(q).then(snap => {
-          if (!snap.empty) {
-            // We'll just use the first one found
-            const id = snap.docs[0].id;
-            subscribeToGame(id);
-          } else {
-            toast.error('No se encontró ningún juego previo');
-            onExit();
-          }
-        });
-      } else {
-        onExit();
-      }
+      // Find the most recent game
+      const q = query(
+        collection(db, 'games'),
+        limit(1)
+      );
+      getDocs(q).then(snap => {
+        if (!snap.empty) {
+          const id = snap.docs[0].id;
+          subscribeToGame(id);
+        } else {
+          toast.error('No se encontró ningún juego previo');
+          onExit();
+        }
+      });
     } else {
       subscribeToGame(gameId);
     }
-  }, [gameId, user]);
+  }, [gameId]);
 
   const subscribeToGame = (id: string) => {
     const unsub = onSnapshot(doc(db, 'games', id), (snap) => {
@@ -233,8 +225,6 @@ export default function GameScreen({ gameId, user, onExit }: GameScreenProps) {
     );
   }
 
-  const isModerator = user?.uid === game.moderatorId;
-
   return (
     <div className="max-w-6xl mx-auto px-6 pb-32">
       {/* Header Info */}
@@ -315,17 +305,15 @@ export default function GameScreen({ gameId, user, onExit }: GameScreenProps) {
       </div>
 
       {/* Moderator Panel */}
-      {isModerator && (
-        <ModeratorPanel 
-          game={game} 
-          gameId={gameId} 
-          question={question}
-          onReveal={handleReveal}
-          onStrike={handleStrike}
-          onAssign={handleAssignPoints}
-          onNext={handleNextQuestion}
-        />
-      )}
+      <ModeratorPanel 
+        game={game} 
+        gameId={gameId} 
+        question={question}
+        onReveal={handleReveal}
+        onStrike={handleStrike}
+        onAssign={handleAssignPoints}
+        onNext={handleNextQuestion}
+      />
     </div>
   );
 }

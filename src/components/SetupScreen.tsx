@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { User } from 'firebase/auth';
 import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp, getDocs, query, limit } from 'firebase/firestore';
 import { handleFirestoreError, OperationType } from '../lib/errorHandlers';
@@ -9,19 +8,17 @@ import { ArrowLeft, Save, Plus } from 'lucide-react';
 import sampleQuestions from '../sampleQuestions.json';
 
 interface SetupScreenProps {
-  user: User | null;
   onGameCreated: (id: string) => void;
   onBack: () => void;
 }
 
-export default function SetupScreen({ user, onGameCreated, onBack }: SetupScreenProps) {
+export default function SetupScreen({ onGameCreated, onBack }: SetupScreenProps) {
   const [team1, setTeam1] = useState('Equipo Azul');
   const [team2, setTeam2] = useState('Equipo Rojo');
   const [numRounds, setNumRounds] = useState(3);
   const [isCreating, setIsCreating] = useState(false);
 
   const handleCreateGame = async () => {
-    if (!user) return;
     setIsCreating(true);
 
     try {
@@ -70,7 +67,7 @@ export default function SetupScreen({ user, onGameCreated, onBack }: SetupScreen
         activeTeam: 1,
         revealedAnswers: [],
         status: 'playing',
-        moderatorId: user.uid,
+        moderatorId: 'public', // Set to public since no auth
         createdAt: serverTimestamp(),
       };
 

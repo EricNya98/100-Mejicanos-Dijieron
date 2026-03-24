@@ -63,22 +63,18 @@ service cloud.firestore {
 
     // Games rules
     match /games/{gameId} {
-      allow read: if true;
-      allow create: if isAuthenticated() && isValidGame(request.resource.data) && request.resource.data.moderatorId == request.auth.uid;
-      allow update: if (isModerator(resource.data) || isAdmin()) && isValidGame(request.resource.data);
-      allow delete: if isModerator(resource.data) || isAdmin();
+      allow read, write: if true;
     }
 
     // Questions rules
     match /questions/{questionId} {
-      allow read: if true;
-      allow create, update, delete: if isAuthenticated() || isAdmin();
+      allow read, write: if true;
     }
 
     // Users rules (for RBAC)
     match /users/{userId} {
-      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
-      allow create, update: if isAdmin();
+      allow read: if true;
+      allow write: if false;
     }
   }
 }
