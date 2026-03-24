@@ -1,0 +1,34 @@
+[
+  {
+    "text": "Menciona una comida típica japonesa",
+    "answers": [
+      { "text": "Sushi", "points": 35 },
+      { "text": "Ramen", "points": 28 },
+      { "text": "Tempura", "points": 14 },
+      { "text": "Onigiri", "points": 10 },
+      { "text": "Té verde", "points": 8 },
+      { "text": "Mochi", "points": 5 }
+    ]
+  },
+  {
+    "text": "Menciona algo que llevas a un viaje",
+    "answers": [
+      { "text": "Maleta", "points": 30 },
+      { "text": "Ropa", "points": 25 },
+      { "text": "Dinero", "points": 20 },
+      { "text": "Celular", "points": 15 },
+      { "text": "Cepillo de dientes", "points": 10 }
+    ]
+  },
+  {
+    "text": "Menciona un animal que vive en el desierto",
+    "answers": [
+      { "text": "Camello", "points": 40 },
+      { "text": "Escorpión", "points": 25 },
+      { "text": "Serpiente", "points": 15 },
+      { "text": "Lagartija", "points": 10 },
+      { "text": "Coyote", "points": 5 },
+      { "text": "Buitre", "points": 5 }
+    ]
+  }
+]

@@ -1,0 +1,84 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: games
+    // Document ID: auto-generated
+    // Fields:
+    //   - team1: string (required)
+    //   - team2: string (required)
+    //   - score1: number (required)
+    //   - score2: number (required)
+    //   - currentRound: number (required)
+    //   - currentQuestionId: string (optional)
+    //   - roundPoints: number (optional)
+    //   - strikes: number (optional)
+    //   - activeTeam: number (optional)
+    //   - revealedAnswers: list (optional)
+    //   - status: string (required, enum: setup, playing, finished)
+    //   - moderatorId: string (required)
+    //
+    // Collection: questions
+    // Document ID: auto-generated
+    // Fields:
+    //   - text: string (required)
+    //   - answers: list of maps (required)
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isModerator(gameData) {
+      return isAuthenticated() && request.auth.uid == gameData.moderatorId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "ericxon958@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidGame(data) {
+      return data.team1 is string && data.team1.size() > 0 && data.team1.size() < 50 &&
+             data.team2 is string && data.team2.size() > 0 && data.team2.size() < 50 &&
+             data.score1 is int && data.score2 is int &&
+             data.currentRound is int &&
+             data.status in ['setup', 'playing', 'finished'] &&
+             data.moderatorId is string &&
+             (!('revealedAnswers' in data) || data.revealedAnswers is list) &&
+             (!('roundPoints' in data) || data.roundPoints is int) &&
+             (!('strikes' in data) || data.strikes is int);
+    }
+
+    function isValidQuestion(data) {
+      return data.text is string && data.text.size() > 0 && data.text.size() < 500 &&
+             data.answers is list && data.answers.size() <= 10;
+    }
+
+    // Games rules
+    match /games/{gameId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && isValidGame(request.resource.data) && request.resource.data.moderatorId == request.auth.uid;
+      allow update: if (isModerator(resource.data) || isAdmin()) && isValidGame(request.resource.data);
+      allow delete: if isModerator(resource.data) || isAdmin();
+    }
+
+    // Questions rules
+    match /questions/{questionId} {
+      allow read: if true;
+      allow create, update, delete: if isAuthenticated() || isAdmin();
+    }
+
+    // Users rules (for RBAC)
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow create, update: if isAdmin();
+    }
+  }
+}

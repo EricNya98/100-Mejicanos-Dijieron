@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Game": {
+      "title": "Game",
+      "description": "Represents a live game session.",
+      "type": "object",
+      "properties": {
+        "team1": { "type": "string", "description": "Name of team 1" },
+        "team2": { "type": "string", "description": "Name of team 2" },
+        "score1": { "type": "integer", "description": "Total score for team 1" },
+        "score2": { "type": "integer", "description": "Total score for team 2" },
+        "totalRounds": { "type": "integer", "description": "Total rounds to play" },
+        "currentRound": { "type": "integer", "description": "Current round number" },
+        "currentQuestionId": { "type": "string", "description": "ID of the current question" },
+        "roundPoints": { "type": "integer", "description": "Points accumulated in the current round" },
+        "strikes": { "type": "integer", "description": "Number of strikes in the current round" },
+        "activeTeam": { "type": "integer", "description": "1 or 2, indicating which team is currently playing" },
+        "revealedAnswers": { "type": "array", "items": { "type": "integer" }, "description": "Indices of revealed answers" },
+        "status": { "type": "string", "enum": ["setup", "playing", "finished"], "description": "Current game status" },
+        "moderatorId": { "type": "string", "description": "UID of the moderator" }
+      },
+      "required": ["team1", "team2", "score1", "score2", "currentRound", "status", "moderatorId"]
+    },
+    "Question": {
+      "title": "Question",
+      "description": "A question with its possible answers.",
+      "type": "object",
+      "properties": {
+        "text": { "type": "string", "description": "The question text" },
+        "answers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "text": { "type": "string" },
+              "points": { "type": "integer" }
+            }
+          }
+        },
+        "category": { "type": "string", "description": "Optional category" }
+      },
+      "required": ["text", "answers"]
+    }
+  },
+  "firestore": {
+    "/games/{gameId}": {
+      "schema": "Game",
+      "description": "Live game sessions"
+    },
+    "/questions/{questionId}": {
+      "schema": "Question",
+      "description": "Library of questions"
+    }
+  }
+}
