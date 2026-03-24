@@ -99,12 +99,12 @@ export default function SetupScreen({ onGameCreated, onBack }: SetupScreenProps)
     >
       <button 
         onClick={onBack}
-        className="flex items-center gap-2 text-xs uppercase tracking-widest opacity-50 hover:opacity-100 mb-8 transition-opacity"
+        className="flex items-center gap-2 text-xs uppercase tracking-widest opacity-50 hover:opacity-100 mb-8 transition-opacity text-[#4a1d1d]"
       >
         <ArrowLeft className="w-4 h-4" /> Volver
       </button>
 
-      <h2 className="text-4xl font-black uppercase tracking-tighter mb-8">Configuración Previa</h2>
+      <h2 className="text-4xl font-black uppercase tracking-tighter mb-8 text-[#4a1d1d]">Configuración Sakura</h2>
 
       <div className="space-y-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -112,18 +112,18 @@ export default function SetupScreen({ onGameCreated, onBack }: SetupScreenProps)
             label="Nombre Equipo 1" 
             value={team1} 
             onChange={setTeam1} 
-            placeholder="Ej. Equipo Azul" 
+            placeholder="Ej. Clan Sakura" 
           />
           <InputGroup 
             label="Nombre Equipo 2" 
             value={team2} 
             onChange={setTeam2} 
-            placeholder="Ej. Equipo Rojo" 
+            placeholder="Ej. Clan Katana" 
           />
         </div>
 
-        <div className="p-6 border border-white/10 bg-white/5">
-          <label className="block text-[10px] uppercase tracking-[0.3em] font-bold opacity-50 mb-4">
+        <div className="p-6 border border-[#ffb7c5] bg-white shadow-sm">
+          <label className="block text-[10px] uppercase tracking-[0.3em] font-bold opacity-50 mb-4 text-[#4a1d1d]">
             Número de Rondas
           </label>
           <div className="flex gap-4">
@@ -133,8 +133,8 @@ export default function SetupScreen({ onGameCreated, onBack }: SetupScreenProps)
                 onClick={() => setNumRounds(n)}
                 className={`flex-1 py-3 font-mono border transition-all ${
                   numRounds === n 
-                    ? 'bg-[#00ff00] text-black border-[#00ff00]' 
-                    : 'border-white/20 hover:border-white/40'
+                    ? 'bg-[#d14d72] text-white border-[#d14d72]' 
+                    : 'border-[#ffb7c5] text-[#4a1d1d] hover:border-[#d14d72]'
                 }`}
               >
                 {n} RONDAS
@@ -146,7 +146,7 @@ export default function SetupScreen({ onGameCreated, onBack }: SetupScreenProps)
         <button
           disabled={isCreating}
           onClick={handleCreateGame}
-          className="w-full py-6 bg-white text-black font-black uppercase tracking-widest text-xl hover:bg-[#00ff00] transition-colors flex items-center justify-center gap-3 disabled:opacity-50"
+          className="w-full py-6 bg-[#d14d72] text-white font-black uppercase tracking-widest text-xl hover:bg-[#b03d5d] transition-colors flex items-center justify-center gap-3 disabled:opacity-50 shadow-md"
         >
           {isCreating ? 'CREANDO...' : (
             <>
@@ -163,7 +163,7 @@ export default function SetupScreen({ onGameCreated, onBack }: SetupScreenProps)
 function InputGroup({ label, value, onChange, placeholder }: any) {
   return (
     <div className="space-y-2">
-      <label className="block text-[10px] uppercase tracking-[0.3em] font-bold opacity-50">
+      <label className="block text-[10px] uppercase tracking-[0.3em] font-bold opacity-50 text-[#4a1d1d]">
         {label}
       </label>
       <input 
@@ -171,7 +171,7 @@ function InputGroup({ label, value, onChange, placeholder }: any) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full bg-white/5 border border-white/10 p-4 font-mono focus:outline-none focus:border-[#00ff00] transition-colors"
+        className="w-full bg-white border border-[#ffb7c5] p-4 font-mono focus:outline-none focus:border-[#d14d72] transition-colors text-[#4a1d1d]"
       />
     </div>
   );

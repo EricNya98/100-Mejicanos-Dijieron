@@ -6,6 +6,7 @@ import StartScreen from './components/StartScreen';
 import SetupScreen from './components/SetupScreen';
 import GameScreen from './components/GameScreen';
 import InstructionsScreen from './components/InstructionsScreen';
+import SakuraBackground from './components/SakuraBackground';
 import { motion, AnimatePresence } from 'motion/react';
 
 export type Screen = 'start' | 'setup' | 'game' | 'instructions';
@@ -28,22 +29,23 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white selection:bg-[#00ff00] selection:text-black">
+    <div className="min-h-screen bg-[#fff5f7] text-[#4a1d1d] selection:bg-[#ffb7c5] selection:text-[#4a1d1d] relative overflow-x-hidden">
+      <SakuraBackground />
       <Toaster position="top-center" richColors />
       
       {/* Header / Nav */}
-      <header className="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center border-b border-white/10 bg-black/50 backdrop-blur-md">
+      <header className="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center border-b border-[#ffb7c5]/30 bg-white/70 backdrop-blur-md">
         <div 
-          className="font-black text-xl tracking-tighter cursor-pointer hover:text-[#00ff00] transition-colors"
+          className="font-black text-xl tracking-tighter cursor-pointer hover:text-[#d14d72] transition-colors flex items-center gap-2"
           onClick={() => setCurrentScreen('start')}
         >
-          100 MEXICANOS <span className="italic">DIJERON</span>
+          <span className="text-[#d14d72]">100 JAPONESES</span> <span className="italic font-light">DIJERON</span>
         </div>
         
         <div className="flex items-center gap-4">
           <div className="hidden sm:block text-right">
             <p className="text-[10px] uppercase opacity-50 font-bold tracking-widest">Panel de Conducción</p>
-            <p className="text-xs font-mono">Modo Abierto</p>
+            <p className="text-xs font-mono text-[#d14d72]">Modo Sakura</p>
           </div>
         </div>
       </header>

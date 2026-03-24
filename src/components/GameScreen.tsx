@@ -109,7 +109,9 @@ export default function GameScreen({ gameId, onExit }: GameScreenProps) {
     if (!game || !question || game.revealedAnswers.includes(index)) return;
     
     const newRevealed = [...game.revealedAnswers, index];
-    const points = question.answers[index].points;
+    const isPenultimateRound = game.currentRound === game.totalRounds - 1;
+    const pointsMultiplier = isPenultimateRound ? 2 : 1;
+    const points = question.answers[index].points * pointsMultiplier;
     
     playSound('correct');
     
@@ -196,28 +198,28 @@ export default function GameScreen({ gameId, onExit }: GameScreenProps) {
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="flex flex-col items-center justify-center min-h-[calc(100vh-10rem)] text-center p-6"
+        className="flex flex-col items-center justify-center min-h-[calc(100vh-10rem)] text-center p-6 relative z-10"
       >
-        <Trophy className="w-32 h-32 text-[#00ff00] mb-8" />
-        <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter mb-4">
+        <Trophy className="w-32 h-32 text-[#d14d72] mb-8" />
+        <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter mb-4 text-[#4a1d1d]">
           {isTie ? '¡EMPATE!' : '¡GANADOR!'}
         </h2>
-        <div className="bg-[#00ff00] text-black px-12 py-6 text-4xl md:text-6xl font-black uppercase tracking-tighter mb-12">
+        <div className="bg-[#d14d72] text-white px-12 py-6 text-4xl md:text-6xl font-black uppercase tracking-tighter mb-12 shadow-lg">
           {isTie ? 'NADIE GANA' : winner}
         </div>
         <div className="grid grid-cols-2 gap-12 mb-12">
           <div className="text-center">
-            <p className="text-xs uppercase tracking-widest opacity-50 mb-2">{game.team1}</p>
-            <p className="text-5xl font-mono font-bold">{game.score1}</p>
+            <p className="text-xs uppercase tracking-widest opacity-50 mb-2 text-[#4a1d1d]">{game.team1}</p>
+            <p className="text-5xl font-mono font-bold text-[#d14d72]">{game.score1}</p>
           </div>
           <div className="text-center">
-            <p className="text-xs uppercase tracking-widest opacity-50 mb-2">{game.team2}</p>
-            <p className="text-5xl font-mono font-bold">{game.score2}</p>
+            <p className="text-xs uppercase tracking-widest opacity-50 mb-2 text-[#4a1d1d]">{game.team2}</p>
+            <p className="text-5xl font-mono font-bold text-[#d14d72]">{game.score2}</p>
           </div>
         </div>
         <button
           onClick={onExit}
-          className="px-12 py-6 border-4 border-white hover:bg-white hover:text-black transition-all font-black uppercase tracking-widest text-2xl"
+          className="px-12 py-6 border-4 border-[#d14d72] text-[#d14d72] hover:bg-[#d14d72] hover:text-white transition-all font-black uppercase tracking-widest text-2xl shadow-md"
         >
           Volver al Inicio
         </button>
@@ -228,20 +230,22 @@ export default function GameScreen({ gameId, onExit }: GameScreenProps) {
   return (
     <div className="max-w-6xl mx-auto px-6 pb-32">
       {/* Header Info */}
-      <div className="flex justify-between items-end mb-12 border-b border-white/10 pb-6">
+      <div className="flex justify-between items-end mb-12 border-b border-[#ffb7c5]/30 pb-6">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.4em] font-bold opacity-50">Ronda {game.currentRound}</p>
-          <h2 className="text-2xl font-black uppercase tracking-tighter">
-            Turno: <span className={game.activeTeam === 1 ? 'text-blue-400' : 'text-red-400'}>
+          <p className="text-[10px] uppercase tracking-[0.4em] font-bold opacity-50 text-[#4a1d1d]">
+            Ronda {game.currentRound} {game.currentRound === game.totalRounds - 1 && <span className="text-[#d14d72] ml-2 font-black">¡PUNTOS X2!</span>}
+          </p>
+          <h2 className="text-2xl font-black uppercase tracking-tighter text-[#4a1d1d]">
+            Turno: <span className={game.activeTeam === 1 ? 'text-[#d14d72]' : 'text-[#b03d5d]'}>
               {game.activeTeam === 1 ? game.team1 : game.team2}
             </span>
           </h2>
         </div>
         <div className="flex gap-4">
-          <button onClick={() => setMuted(!muted)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+          <button onClick={() => setMuted(!muted)} className="p-2 hover:bg-[#ffb7c5]/20 rounded-full transition-colors text-[#d14d72]">
             {muted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
           </button>
-          <button onClick={onExit} className="p-2 hover:bg-white/10 rounded-full transition-colors text-red-500">
+          <button onClick={onExit} className="p-2 hover:bg-red-50 rounded-full transition-colors text-red-500">
             <LogOut className="w-5 h-5" />
           </button>
         </div>
@@ -251,18 +255,18 @@ export default function GameScreen({ gameId, onExit }: GameScreenProps) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         {/* Left: Scores & Strikes */}
         <div className="lg:col-span-3 space-y-8 order-2 lg:order-1">
-          <ScoreCard name={game.team1} score={game.score1} active={game.activeTeam === 1} color="blue" />
-          <ScoreCard name={game.team2} score={game.score2} active={game.activeTeam === 2} color="red" />
+          <ScoreCard name={game.team1} score={game.score1} active={game.activeTeam === 1} color="pink" />
+          <ScoreCard name={game.team2} score={game.score2} active={game.activeTeam === 2} color="cherry" />
           
-          <div className="p-6 border border-white/10 bg-white/5">
-            <p className="text-[10px] uppercase tracking-widest font-bold opacity-50 mb-4">Strikes</p>
+          <div className="p-6 border border-[#ffb7c5] bg-white shadow-sm">
+            <p className="text-[10px] uppercase tracking-widest font-bold opacity-50 mb-4 text-[#4a1d1d]">Strikes</p>
             <div className="flex justify-center gap-4">
               {[1, 2, 3].map(i => (
                 <motion.div
                   key={i}
                   animate={game.strikes >= i ? { scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] } : {}}
                   className={`w-12 h-12 border-2 flex items-center justify-center text-2xl font-black transition-colors ${
-                    game.strikes >= i ? 'border-red-500 text-red-500 bg-red-500/10' : 'border-white/10 text-white/10'
+                    game.strikes >= i ? 'border-[#d14d72] text-[#d14d72] bg-[#d14d72]/10' : 'border-[#ffb7c5]/30 text-[#ffb7c5]/30'
                   }`}
                 >
                   X
@@ -278,7 +282,7 @@ export default function GameScreen({ gameId, onExit }: GameScreenProps) {
             key={question.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-12 border-4 border-white bg-white text-black text-center"
+            className="p-12 border-4 border-[#d14d72] bg-white text-[#4a1d1d] text-center shadow-md"
           >
             <h3 className="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-tight">
               "{question.text}"
@@ -297,7 +301,7 @@ export default function GameScreen({ gameId, onExit }: GameScreenProps) {
           </div>
 
           <div className="flex justify-center">
-            <div className="bg-[#00ff00] text-black px-8 py-4 font-black text-4xl tracking-tighter">
+            <div className="bg-[#d14d72] text-white px-8 py-4 font-black text-4xl tracking-tighter shadow-lg">
               PUNTOS: {game.roundPoints}
             </div>
           </div>
@@ -319,17 +323,17 @@ export default function GameScreen({ gameId, onExit }: GameScreenProps) {
 }
 
 function ScoreCard({ name, score, active, color }: any) {
-  const colorClass = color === 'blue' ? 'border-blue-500' : 'border-red-500';
-  const bgClass = color === 'blue' ? 'bg-blue-500/10' : 'bg-red-500/10';
-  const textClass = color === 'blue' ? 'text-blue-400' : 'text-red-400';
+  const colorClass = color === 'pink' ? 'border-[#ffb7c5]' : 'border-[#d14d72]';
+  const bgClass = color === 'pink' ? 'bg-[#ffb7c5]/20' : 'bg-[#d14d72]/10';
+  const textClass = color === 'pink' ? 'text-[#d14d72]' : 'text-[#b03d5d]';
 
   return (
-    <div className={`p-6 border-l-4 ${colorClass} ${active ? bgClass : 'bg-white/5'} transition-colors`}>
+    <div className={`p-6 border-l-4 ${colorClass} ${active ? bgClass : 'bg-white'} transition-colors shadow-sm`}>
       <p className={`text-[10px] uppercase tracking-widest font-bold mb-1 ${active ? textClass : 'opacity-50'}`}>
         {active ? 'Jugando Ahora' : 'En Espera'}
       </p>
-      <h4 className="text-xl font-black uppercase tracking-tighter truncate">{name}</h4>
-      <p className="text-4xl font-mono font-bold mt-2">{score}</p>
+      <h4 className="text-xl font-black uppercase tracking-tighter truncate text-[#4a1d1d]">{name}</h4>
+      <p className="text-4xl font-mono font-bold mt-2 text-[#d14d72]">{score}</p>
     </div>
   );
 }
@@ -344,20 +348,20 @@ function AnswerSlot({ index, answer, revealed }: { index: number, answer: Answer
         className="w-full h-full relative preserve-3d"
       >
         {/* Front (Hidden) */}
-        <div className="absolute inset-0 backface-hidden bg-white/5 border border-white/10 flex items-center justify-between px-6">
-          <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center font-bold text-sm">
+        <div className="absolute inset-0 backface-hidden bg-white border border-[#ffb7c5] flex items-center justify-between px-6 shadow-sm">
+          <div className="w-8 h-8 rounded-full bg-[#ffb7c5]/20 flex items-center justify-center font-bold text-sm text-[#d14d72]">
             {index}
           </div>
-          <div className="flex-1 mx-4 border-b border-dashed border-white/20"></div>
-          <div className="text-white/20 font-mono">??</div>
+          <div className="flex-1 mx-4 border-b border-dashed border-[#ffb7c5]/30"></div>
+          <div className="text-[#ffb7c5] font-mono">??</div>
         </div>
 
         {/* Back (Revealed) */}
-        <div className="absolute inset-0 backface-hidden bg-[#00ff00] text-black flex items-center justify-between px-6 rotate-x-180">
+        <div className="absolute inset-0 backface-hidden bg-[#d14d72] text-white flex items-center justify-between px-6 rotate-x-180 shadow-md">
           <div className="font-black uppercase tracking-tight text-lg truncate flex-1 mr-4">
             {answer.text}
           </div>
-          <div className="font-mono font-bold text-2xl border-l border-black/20 pl-4">
+          <div className="font-mono font-bold text-2xl border-l border-white/20 pl-4">
             {answer.points}
           </div>
         </div>
